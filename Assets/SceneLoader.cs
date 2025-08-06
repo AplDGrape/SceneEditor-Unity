@@ -6,7 +6,7 @@ public class SceneLoader : MonoBehaviour
 {
     void Start()
     {
-        TextAsset xmlData = Resources.Load<TextAsset>("Scene1"); // No file extension
+        TextAsset xmlData = Resources.Load<TextAsset>("ExamTestingScene"); // No file extension
         if (xmlData == null)
         {
             Debug.LogError("Scene XML not found in Resources folder!");
@@ -22,14 +22,29 @@ public class SceneLoader : MonoBehaviour
         {
             string name = objNode.SelectSingleNode("Name").InnerText;
             int type = int.Parse(objNode.SelectSingleNode("Type").InnerText);
+            int rigidBody = int.Parse(objNode.SelectSingleNode("RigidBody").InnerText);
 
             Vector3 position = ReadVector3(objNode.SelectSingleNode("Position"));
             Vector3 scale = ReadVector3(objNode.SelectSingleNode("Scale"));
             Vector3 rotation = ReadVector3(objNode.SelectSingleNode("Rotation"));
-            int rigidBody = int.Parse(objNode.SelectSingleNode("RigidBody").InnerText);
 
-            // Create primitive object
-            GameObject go = GameObject.CreatePrimitive((PrimitiveType)type);
+            // Mapping to the game engine's type enum to Unity's PrimitiveType enum
+            PrimitiveType unityType = PrimitiveType.Cube;
+
+            switch (type)
+            {
+                case 2: unityType = PrimitiveType.Cube; break;
+                case 3: unityType = PrimitiveType.Plane; break;
+                case 4: unityType = PrimitiveType.Sphere; break;
+                case 5: unityType = PrimitiveType.Capsule; break;
+                case 10: unityType = PrimitiveType.Cylinder; break;
+                case 6: unityType = PrimitiveType.Quad; break;
+                default:
+                    Debug.LogWarning($"Unsupported primitive type: {type}");
+                    continue;
+            }
+
+            GameObject go = GameObject.CreatePrimitive(unityType);
             go.name = name;
             go.transform.position = position;
             go.transform.localScale = scale;
