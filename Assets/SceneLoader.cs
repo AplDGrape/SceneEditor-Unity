@@ -6,7 +6,7 @@ public class SceneLoader : MonoBehaviour
 {
     void Start()
     {
-        TextAsset xmlData = Resources.Load<TextAsset>("ExamTestingScene"); // No file extension
+        TextAsset xmlData = Resources.Load<TextAsset>("Quiz2Unity2");
         if (xmlData == null)
         {
             Debug.LogError("Scene XML not found in Resources folder!");
